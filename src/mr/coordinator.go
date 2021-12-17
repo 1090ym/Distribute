@@ -1,6 +1,9 @@
 package mr
 
-import "log"
+import (
+	"log"
+	"sync"
+)
 import "net"
 import "os"
 import "net/rpc"
@@ -8,8 +11,13 @@ import "net/http"
 
 
 type Coordinator struct {
-	// Your definitions here.
+	lock sync.Mutex	// 保护共享信息，避免冲突
 
+	stage string // 作业当前阶段，MAP or REDUCE。为空代表已完成，可以退出
+	nMap int
+	nReduce int
+	tasks map[string]Task
+	availableTasks chan Task
 }
 
 // Your code here -- RPC handlers for the worker to call.
@@ -60,7 +68,9 @@ func (c *Coordinator) Done() bool {
 // nReduce is the number of reduce tasks to use.
 //
 func MakeCoordinator(files []string, nReduce int) *Coordinator {
-	c := Coordinator{}
+	c := Coordinator{
+		
+	}
 
 	// Your code here.
 
